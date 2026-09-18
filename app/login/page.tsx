@@ -2,7 +2,14 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { demoAdmin, demoSessionKey } from '../demo-auth';
+import { demoAccounts, demoMember, findDemoAccount, persistDemoSession, type DemoRole } from '../demo-auth';
+
+const viewRoutes: Record<string, string> = {
+  admin: '/?view=Admin',
+  submit: '/?view=Submit',
+  saved: '/?view=Saved',
+  profile: '/?view=Profile'
+};
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,21 +17,34 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showDemoCredentials, setShowDemoCredentials] = useState(true);
 
-  const signIn = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (email.trim().toLowerCase() !== demoAdmin.email || password !== demoAdmin.password) {
-      setError('That email and password do not match the development account.');
-      return;
-    }
-
-    window.localStorage.setItem(demoSessionKey, JSON.stringify({ email: demoAdmin.email, name: demoAdmin.name, role: 'admin' }));
-    const destination = new URLSearchParams(window.location.search).get('next') || '/';
-    window.location.assign(destination === 'admin' ? '/?view=Admin' : destination);
+  const destination = () => {
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (!next) return '/';
+    return viewRoutes[next] ?? next;
   };
 
-  const useDemoAccount = () => {
-    setEmail(demoAdmin.email);
-    setPassword(demoAdmin.password);
+  const startSession = (account: { email: string; name: string }, role: DemoRole) => {
+    persistDemoSession({ email: account.email, name: account.name, role });
+    window.location.assign(destination());
+  };
+
+  const signIn = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const match = findDemoAccount(email, password);
+    if (!match) {
+      setError('That email and password do not match a development account.');
+      return;
+    }
+    startSession(match.account, match.role);
+  };
+
+  const createDemoAccount = () => {
+    startSession(demoMember, 'member');
+  };
+
+  const useDemoAccount = (account: { email: string; password: string }) => {
+    setEmail(account.email);
+    setPassword(account.password);
     setError('');
   };
 
@@ -46,10 +66,10 @@ export default function LoginPage() {
             <label className="grid gap-2 font-mono text-[10px] uppercase tracking-[.06em] text-muted">Password<input className="border border-line bg-[#fafbf8] p-[13px] font-sans text-[13px] outline-coral" type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Your password" required /></label>
             {error && <p className="m-0 border-l-[3px] border-coral bg-[#f0e7dc] p-3 text-xs leading-[1.5] text-ink" role="alert">{error}</p>}
             <button className="primary-button" type="submit">Sign in -&gt;</button>
-            <p className="m-0 text-center text-xs text-muted">New here? <button type="button" className="border-0 bg-transparent p-0 text-coral hover:text-ink">Create a demo account</button></p>
+            <p className="m-0 text-center text-xs text-muted">New here? <button type="button" onClick={createDemoAccount} className="border-0 bg-transparent p-0 text-coral hover:text-ink">Create a demo account</button></p>
           </form>
 
-          {showDemoCredentials && <div className="mt-5 border border-coral bg-[#f1e8dd] p-5"><div className="flex items-start justify-between gap-4"><div><p className="m-0 font-mono text-[10px] uppercase tracking-[.08em] text-coral">Development access</p><p className="mb-0 mt-2 text-xs leading-[1.5] text-muted">Use the sample moderator account to preview the admin dashboard.</p></div><button type="button" className="border-0 bg-transparent font-mono text-[10px] text-muted" onClick={() => setShowDemoCredentials(false)} aria-label="Hide development credentials">x</button></div><button type="button" className="mt-4 w-full border border-line bg-white p-3 text-left hover:border-coral" onClick={useDemoAccount}><span className="block font-mono text-[10px] uppercase tracking-[.06em] text-muted">Sample admin</span><strong className="mt-1 block font-mono text-xs font-normal text-ink">{demoAdmin.email}</strong><span className="mt-1 block font-mono text-xs text-ink">{demoAdmin.password}</span></button></div>}
+          {showDemoCredentials && <div className="mt-5 border border-coral bg-[#f1e8dd] p-5"><div className="flex items-start justify-between gap-4"><div><p className="m-0 font-mono text-[10px] uppercase tracking-[.08em] text-coral">Development access</p><p className="mb-0 mt-2 text-xs leading-[1.5] text-muted">Sign in to submit and save. The admin account also unlocks the review queue.</p></div><button type="button" className="border-0 bg-transparent font-mono text-[10px] text-muted" onClick={() => setShowDemoCredentials(false)} aria-label="Hide development credentials">x</button></div><div className="mt-4 grid gap-2">{demoAccounts.map(entry => <button key={entry.role} type="button" className="w-full border border-line bg-white p-3 text-left hover:border-coral" onClick={() => useDemoAccount(entry.account)}><span className="block font-mono text-[10px] uppercase tracking-[.06em] text-muted">{entry.label}</span><strong className="mt-1 block font-mono text-xs font-normal text-ink">{entry.account.email}</strong><span className="mt-1 block font-mono text-xs text-ink">{entry.account.password}</span></button>)}</div></div>}
         </section>
       </div>
     </div>

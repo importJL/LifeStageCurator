@@ -127,6 +127,37 @@
   .stage-options button { @apply border border-line bg-white p-[11px] text-left text-xs text-muted; }
   .stage-options button.selected { @apply border-coral bg-[#f1e8dd] text-ink; }
   .stage-options span { @apply mr-[7px] text-coral; }
+  .review-modal { @apply relative max-h-[86vh] w-full max-w-[720px] overflow-auto bg-paper p-[38px] shadow-modal; }
+  .review-modal h2 { @apply m-0 mb-3 font-sans text-[30px] font-medium leading-tight; }
+  .review-modal p:not(.eyebrow) { @apply text-[15px] leading-[1.7] text-[#424a44]; }
+  .review-meta { @apply mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[.06em] text-muted; }
+  .review-actions { @apply mt-7 flex flex-wrap gap-3 border-t border-line pt-5; }
+  .reject-button { @apply border border-ink bg-transparent px-[17px] py-[14px] font-mono text-[11px] uppercase tracking-[.05em] hover:border-coral hover:text-coral; }
+  .notify { @apply relative; }
+  .notify-button { @apply relative grid h-9 w-9 place-items-center border border-line bg-white text-ink hover:border-coral hover:text-coral; }
+  .notify-badge { @apply absolute -right-1 -top-1 grid h-4 min-w-[16px] place-items-center rounded-full bg-coral px-1 font-mono text-[9px] leading-none text-white; }
+  .notify-panel { @apply absolute right-0 top-[calc(100%+10px)] z-[6] w-[340px] max-w-[calc(100vw-32px)] border border-line bg-white shadow-modal; }
+  .notify-head { @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3; }
+  .notify-head strong { @apply font-mono text-[10px] uppercase tracking-[.08em] text-ink; }
+  .notify-list { @apply max-h-[380px] overflow-auto; }
+  .notify-item { @apply grid w-full gap-1 border-b border-line px-4 py-3 text-left hover:bg-[#f7f8f3]; }
+  .notify-item:last-child { @apply border-b-0; }
+  .notify-item.unread { @apply bg-[#fdf4ef]; }
+  .notify-label { @apply font-mono text-[9px] uppercase tracking-[.08em] text-coral; }
+  .notify-message { @apply text-[12px] leading-[1.5] text-ink; }
+  .notify-preview { @apply text-[11px] leading-[1.5] text-muted; }
+  .notify-time { @apply font-mono text-[9px] uppercase tracking-[.06em] text-muted; }
+  .notify-empty { @apply m-0 px-4 py-6 text-center text-[12px] text-muted; }
+  .like-button { @apply inline-flex items-center gap-2 border border-line bg-white px-3 py-2 font-mono text-[10px] uppercase tracking-[.06em] text-ink hover:border-coral hover:text-coral disabled:cursor-not-allowed disabled:opacity-60; }
+  .like-button.active { @apply border-coral bg-[#fdf4ef] text-coral; }
+  .like-button span { @apply text-[13px]; }
+  .article-body { @apply text-[16px] leading-[1.75] text-[#424a44]; }
+  .article-body p { @apply mb-4; }
+  .article-body h2 { @apply mb-3 mt-6 font-display text-[30px] font-medium leading-tight text-ink; }
+  .article-body blockquote { @apply my-5 border-l-[3px] border-coral bg-[#f0e7dc] px-4 py-3 font-display text-[19px] italic text-ink; }
+  .article-body ul { @apply mb-4 list-disc pl-6; }
+  .article-body ol { @apply mb-4 list-decimal pl-6; }
+  .article-body a { @apply text-coral underline; }
 }
 
 @layer utilities {
@@ -166,4 +197,5 @@
   .profile-card .text-button { @apply ml-[67px] w-full text-left; }
   .modal { @apply px-5 py-7; }
   .modal h2 { @apply text-[36px]; }
+  .review-modal { @apply px-5 py-7; }
 }

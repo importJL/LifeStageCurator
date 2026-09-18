@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import ArticleInteractions from './ArticleInteractions';
+import CommunityArticle from './CommunityArticle';
 import TypeExperience from './TypeExperience';
 
 type Article = {
@@ -108,7 +109,6 @@ export function generateMetadata({ params }: { params: { id: string } }) {
 
 export default function ArticlePage({ params }: { params: { id: string } }) {
   const article = articles.find(item => item.id === params.id);
-  if (!article) notFound();
 
   return <main className="min-h-screen bg-paper">
     <div className="mx-auto max-w-[1120px] px-5 pb-20 sm:px-8">
@@ -117,7 +117,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
         <Link href="/" className="font-mono text-[10px] uppercase tracking-[.08em] text-muted hover:text-coral">Back to library -&gt;</Link>
       </header>
 
-      <article className="mx-auto max-w-[820px] pt-16 sm:pt-24">
+      {article ? <article className="mx-auto max-w-[820px] pt-16 sm:pt-24">
         <div className="mb-5 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[.08em] text-coral"><span>{article.type}</span><span className="text-line">/</span><span className="text-muted">{article.stage}</span><span className="text-line">/</span><span className="text-muted">{article.topic}</span></div>
         <h1 className="max-w-[780px] text-[clamp(44px,7vw,78px)] font-medium leading-[.98] tracking-[-.04em] text-ink">{article.title}</h1>
         <p className="mt-7 max-w-[650px] text-[18px] leading-[1.55] text-muted">{article.dek}</p>
@@ -127,10 +127,12 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
         <TypeExperience article={article} />
 
+        <ArticleInteractions articleId={article.id} articleTitle={article.title} />
+
         <div className="mt-16 border-t border-line pt-8"><p className="font-mono text-[10px] uppercase tracking-[.08em] text-muted">Keep exploring</p><div className="mt-4 grid gap-3 sm:grid-cols-2">{article.related.map(related => <Link href={`/articles/${related.id}`} key={related.id} className="group border border-line bg-white p-5 hover:-translate-y-0.5 hover:border-coral"><span className="font-mono text-[10px] uppercase tracking-[.08em] text-coral">{related.type}</span><strong className="mt-3 block font-display text-[21px] font-medium leading-tight text-ink group-hover:text-coral">{related.title}</strong><span className="mt-5 block font-mono text-[10px] uppercase tracking-[.08em] text-muted">Read next -&gt;</span></Link>)}</div></div>
 
         <aside className="mt-12 border-t border-line pt-6 text-[12px] leading-[1.6] text-muted"><strong className="text-ink">A note on professional advice.</strong> LifeStage Curator shares practical information and community resources. This article is not medical, legal, financial, or mental-health advice. Seek a qualified professional for guidance about your situation.</aside>
-      </article>
+      </article> : <CommunityArticle id={params.id} />}
     </div>
   </main>;
 }

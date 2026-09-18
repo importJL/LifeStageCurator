@@ -4,3 +4,14 @@ node_modules/
 .env.example
 package-lock.json
 tech_specs.md
+
+tsconfig.tsbuildinfo
+
+# Enrichment service (Python)
+enrichment/.venv/
+enrichment/data/
+enrichment/**/__pycache__/
+enrichment/**/*.egg-info/
+enrichment/.pytest_cache/
+enrichment/.ruff_cache/
+!enrichment/.env.example

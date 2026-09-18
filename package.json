@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:enrichment": "cd enrichment && .venv/bin/uvicorn app.main:app --reload --port 8000",
+    "dev:all": "bash scripts/dev-servers.sh",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
